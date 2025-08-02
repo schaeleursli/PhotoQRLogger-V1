@@ -4,7 +4,7 @@ struct PhotoFullScreenView: View {
     let imageURL: URL
     let onDelete: (() -> Void)?
 
-    @Environment(\._dismiss) var dismiss
+    @Environment(\.dismiss) var dismiss
     @State private var image: UIImage? = nil
 
     var body: some View {
