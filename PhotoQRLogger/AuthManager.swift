@@ -8,7 +8,7 @@ class AuthManager: ObservableObject {
     @Published var showPinPrompt = false
     @Published var enteredPin = ""
 
-    private let correctPin = UserDefaults.standard.string(forKey: "userPIN") ?? "1234"
+    private var correctPin = UserDefaults.standard.string(forKey: "userPIN") ?? "1234"
 
     func authenticate() {
         let context = LAContext()
@@ -43,5 +43,6 @@ class AuthManager: ObservableObject {
 
     func saveNewPin(_ pin: String) {
         UserDefaults.standard.set(pin, forKey: "userPIN")
+        correctPin = UserDefaults.standard.string(forKey: "userPIN") ?? pin
     }
 }
