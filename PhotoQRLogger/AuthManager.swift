@@ -43,6 +43,8 @@ class AuthManager: ObservableObject {
     }
 
     func saveNewPin(_ pin: String) {
+
         keychain.set(pin, forKey: "userPIN")
+
     }
 }
