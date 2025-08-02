@@ -3,9 +3,20 @@ import XCTest
 
 final class PINTests: XCTestCase {
     func testPINStorageAndValidation() {
-        let pinManager = PINManager()
-        pinManager.setPIN("1234")
-        XCTAssertTrue(pinManager.validatePIN("1234"))
-        XCTAssertFalse(pinManager.validatePIN("0000"))
+        // Ensure a clean state
+        UserDefaults.standard.removeObject(forKey: "userPIN")
+
+        let authManager = AuthManager()
+        authManager.saveNewPin("1234")
+
+        authManager.enteredPin = "1234"
+        authManager.checkPIN()
+        XCTAssertTrue(authManager.isUnlocked)
+
+        authManager.isUnlocked = false
+        authManager.enteredPin = "0000"
+        authManager.checkPIN()
+        XCTAssertFalse(authManager.isUnlocked)
+        XCTAssertEqual(authManager.authError, "Incorrect PIN. Try again.")
     }
 }
