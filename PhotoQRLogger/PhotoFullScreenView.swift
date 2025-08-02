@@ -61,7 +61,13 @@ struct PhotoFullScreenView: View {
     func share() {
         guard let img = image else { return }
         let activityVC = UIActivityViewController(activityItems: [img], applicationActivities: nil)
-        UIApplication.shared.windows.first?.rootViewController?.present(activityVC, animated: true)
+
+        if let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }),
+           let rootVC = windowScene.windows.first?.rootViewController {
+            rootVC.present(activityVC, animated: true)
+        }
     }
 
     func delete() {
