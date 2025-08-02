@@ -53,8 +53,14 @@ struct PhotoFullScreenView: View {
     }
 
     func loadImage() {
-        if let data = try? Data(contentsOf: imageURL) {
-            image = UIImage(data: data)
+        let url = imageURL
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let data = try? Data(contentsOf: url),
+               let img = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self.image = img
+                }
+            }
         }
     }
 
