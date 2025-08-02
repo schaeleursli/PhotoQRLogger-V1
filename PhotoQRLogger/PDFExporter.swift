@@ -22,7 +22,10 @@ class PDFExporter {
         UIGraphicsBeginPDFContextToFile(outputURL.path, .zero, pdfMeta as [String : Any])
         UIGraphicsBeginPDFPage()
 
-        guard let context = UIGraphicsGetCurrentContext() else { return }
+        guard UIGraphicsGetCurrentContext() != nil else {
+            UIGraphicsEndPDFContext()
+            return
+        }
 
         let pageWidth = 595.2
         let pageHeight = 841.8
