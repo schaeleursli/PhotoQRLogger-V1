@@ -15,14 +15,23 @@ struct ZoomableScrollView<Content: View>: UIViewRepresentable {
 
         let hosted = UIHostingController(rootView: content)
         hosted.view.translatesAutoresizingMaskIntoConstraints = true
-        hosted.view.frame = CGRect(origin: .zero, size: CGSize(width: 300, height: 300))
+        hosted.view.frame = scrollView.bounds
 
         scrollView.addSubview(hosted.view)
+        scrollView.contentSize = hosted.view.bounds.size
         context.coordinator.hostingController = hosted
         return scrollView
     }
 
-    func updateUIView(_ scrollView: UIScrollView, context: Context) {}
+    func updateUIView(_ scrollView: UIScrollView, context: Context) {
+        if let hostedView = context.coordinator.hostingController?.view {
+            if hostedView.frame != scrollView.bounds {
+                hostedView.frame = scrollView.bounds
+            }
+            scrollView.contentSize = hostedView.bounds.size
+        }
+        context.coordinator.hostingController?.rootView = content
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
