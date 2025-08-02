@@ -11,7 +11,7 @@ final class OverlaySnapshotTests: XCTestCase {
 
     func testOverlayRendering() {
         let base = UIImage(systemName: "photo")!
-        let qr = generateQRCode(from: "test data")!
+        let qr = PDFExporter.generateQRCode(from: "test data")!
 
         let metadata = PhotoMetadata(
             user: "Tester",
