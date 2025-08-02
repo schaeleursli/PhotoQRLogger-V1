@@ -1,8 +1,7 @@
 import SwiftUI
 
-@Environment(\.scenePhase) private var scenePhase
-
 struct AuthGateView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @StateObject var authManager = AuthManager()
 
     var body: some View {
@@ -61,9 +60,6 @@ struct AuthGateView: View {
         .onAppear {
             authManager.authenticate()
         }
-    }
-
-
         .onChange(of: scenePhase) { newPhase in
             if newPhase == .background {
                 authManager.shouldLock = true
@@ -74,3 +70,4 @@ struct AuthGateView: View {
             }
         }
     }
+}
