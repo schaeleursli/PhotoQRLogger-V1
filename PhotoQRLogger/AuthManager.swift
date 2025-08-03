@@ -8,8 +8,10 @@ class AuthManager: ObservableObject {
     @Published var showPinPrompt = false
     @Published var enteredPin = ""
 
+
     private var correctPin: String? {
         KeychainHelper.load(key: "userPIN")
+
     }
 
     func authenticate() {
@@ -54,11 +56,13 @@ class AuthManager: ObservableObject {
     func saveNewPin(_ pin: String) {
         let isValid = pin.count == 4 && pin.allSatisfy { $0.isNumber }
         if isValid {
+
             if KeychainHelper.save(pin, for: "userPIN") {
                 authError = nil
             } else {
                 authError = "Failed to save PIN."
             }
+
         } else {
             authError = "PIN must be 4 numeric digits."
         }
