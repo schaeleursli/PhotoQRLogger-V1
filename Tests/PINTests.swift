@@ -4,7 +4,7 @@ import XCTest
 final class PINTests: XCTestCase {
     func testPINStorageAndValidation() {
         // Ensure a clean state
-        UserDefaults.standard.removeObject(forKey: "userPIN")
+        KeychainHelper.delete(key: "userPIN")
 
         let authManager = AuthManager()
         authManager.saveNewPin("1234")
@@ -21,12 +21,12 @@ final class PINTests: XCTestCase {
     }
 
     func testInvalidPINRejected() {
-        UserDefaults.standard.removeObject(forKey: "userPIN")
+        KeychainHelper.delete(key: "userPIN")
 
         let authManager = AuthManager()
         authManager.saveNewPin("12ab")
 
-        XCTAssertNil(UserDefaults.standard.string(forKey: "userPIN"))
+        XCTAssertNil(KeychainHelper.load(key: "userPIN"))
         XCTAssertEqual(authManager.authError, "PIN must be 4 numeric digits.")
     }
 }
