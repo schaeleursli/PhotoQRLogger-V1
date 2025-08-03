@@ -19,4 +19,14 @@ final class PINTests: XCTestCase {
         XCTAssertFalse(authManager.isUnlocked)
         XCTAssertEqual(authManager.authError, "Incorrect PIN. Try again.")
     }
+
+    func testInvalidPINRejected() {
+        UserDefaults.standard.removeObject(forKey: "userPIN")
+
+        let authManager = AuthManager()
+        authManager.saveNewPin("12ab")
+
+        XCTAssertNil(UserDefaults.standard.string(forKey: "userPIN"))
+        XCTAssertEqual(authManager.authError, "PIN must be 4 numeric digits.")
+    }
 }

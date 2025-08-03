@@ -36,13 +36,20 @@ class AuthManager: ObservableObject {
     func checkPIN() {
         if enteredPin == correctPin {
             isUnlocked = true
+            authError = nil
         } else {
             authError = "Incorrect PIN. Try again."
         }
     }
 
     func saveNewPin(_ pin: String) {
-        UserDefaults.standard.set(pin, forKey: "userPIN")
-        correctPin = UserDefaults.standard.string(forKey: "userPIN") ?? pin
+        let isValid = pin.count == 4 && pin.allSatisfy { $0.isNumber }
+        if isValid {
+            UserDefaults.standard.set(pin, forKey: "userPIN")
+            correctPin = pin
+            authError = nil
+        } else {
+            authError = "PIN must be 4 numeric digits."
+        }
     }
 }
