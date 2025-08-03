@@ -8,7 +8,9 @@ class AuthManager: ObservableObject {
     @Published var showPinPrompt = false
     @Published var enteredPin = ""
 
-    private var correctPin = UserDefaults.standard.string(forKey: "userPIN") ?? "1234"
+    private var correctPin: String? {
+        KeychainHelper.load(key: "userPIN")
+    }
 
     func authenticate() {
         let context = LAContext()
@@ -22,21 +24,28 @@ class AuthManager: ObservableObject {
                     if success {
                         self.isUnlocked = true
                     } else {
+                        self.authError = err?.localizedDescription
                         self.showPinPrompt = true
                     }
                 }
             }
         } else {
             DispatchQueue.main.async {
+                self.authError = error?.localizedDescription
                 self.showPinPrompt = true
             }
         }
     }
 
     func checkPIN() {
-        if enteredPin == correctPin {
+        guard let storedPin = correctPin else {
+            authError = "No PIN set."
+            return
+        }
+        if enteredPin == storedPin {
             isUnlocked = true
             authError = nil
+            enteredPin = ""
         } else {
             authError = "Incorrect PIN. Try again."
         }
@@ -45,9 +54,11 @@ class AuthManager: ObservableObject {
     func saveNewPin(_ pin: String) {
         let isValid = pin.count == 4 && pin.allSatisfy { $0.isNumber }
         if isValid {
-            UserDefaults.standard.set(pin, forKey: "userPIN")
-            correctPin = pin
-            authError = nil
+            if KeychainHelper.save(pin, for: "userPIN") {
+                authError = nil
+            } else {
+                authError = "Failed to save PIN."
+            }
         } else {
             authError = "PIN must be 4 numeric digits."
         }
