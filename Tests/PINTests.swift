@@ -29,4 +29,14 @@ final class PINTests: XCTestCase {
         XCTAssertNil(KeychainHelper.load(key: "userPIN"))
         XCTAssertEqual(authManager.authError, "PIN must be 4 numeric digits.")
     }
+
+    func testCheckPINWithNoStoredPIN() {
+        KeychainHelper.delete(key: "userPIN")
+
+        let authManager = AuthManager()
+        authManager.enteredPin = "1234"
+        authManager.checkPIN()
+        XCTAssertFalse(authManager.isUnlocked)
+        XCTAssertEqual(authManager.authError, "No PIN set.")
+    }
 }
